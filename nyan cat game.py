@@ -12,8 +12,8 @@ print("press SPACE to jump")
 print("press r to restart")
 print("press q to quit")
 
-
-macka = pygame.Rect(200, 300, 100, 100)
+slika_macke = pygame.image.load('Nyan_cat_slika.png').convert_alpha()
+macka  = slika_macke.get_rect()
 velocity_y = 0
 gravity = 1
 jump_strength = -20
@@ -55,7 +55,7 @@ def game_loop():
         gravitacija()
         screen_collision()
 
-        pygame.draw.rect(screen, (0, 255, 0), macka)
+        pygame.draw.rect(screen, , macka)
 
         pygame.display.update()
         clock.tick(60)
