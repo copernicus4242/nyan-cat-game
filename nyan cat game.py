@@ -1,14 +1,17 @@
 import pygame
 pygame.init()
 
-window_height = 800
+window_height = 500
 window_width = 800
 screen = pygame.display.set_mode((window_width, window_height))
 
 pygame.display.set_caption('Nyan Cat')
 clock = pygame.time.Clock()
+
 slika_macke = pygame.image.load("nyan-cat-slika.png").convert_alpha()
 slika_macke = pygame.transform.scale(slika_macke, (100, 75))
+
+bg = pygame.image.load("Background.jpg").convert()
 
 print("press SPACE to jump")
 print("press r to restart")
@@ -19,6 +22,7 @@ macka = slika_macke.get_rect()
 velocity_y = 0
 gravity = 1
 jump_strength = -20
+
 def gravitacija():
     global velocity_y
     velocity_y += gravity
@@ -35,6 +39,7 @@ def screen_collision():
 
 def game_loop():
     macka.center = (200, 300)
+    bg_x = 0
     velocity_y = 0
 
     while True:
@@ -53,6 +58,13 @@ def game_loop():
                     return
 
         screen.fill((255, 255, 255))
+        bg_x -= 2
+
+        screen.blit(bg, (bg_x, 0))
+        screen.blit(bg, (bg_x + bg.get_width(), 0))
+        if bg_x <= -bg.get_width():
+            bg_x = 0
+
 
         gravitacija()
         screen_collision()
