@@ -21,6 +21,10 @@ print("press SPACE to jump")
 print("press r to restart")
 print("press q to quit")
 
+pygame.mixer.init()
+pygame.mixer.music.load("nyan_cat_soundtrack.wav")
+pygame.mixer.music.play(-1)
+
 
 macka = slika_macke.get_rect()
 velocity_y = 0
@@ -30,13 +34,13 @@ jump_strength = -20
 platform_list = []
 platform_width = slika_klobase.get_width()
 platform_height = slika_klobase.get_height()
-scroll_speed = 4
+scroll_speed = 5
 st_platform = 5
 
 for i in range(st_platform):
     platform = slika_klobase.get_rect()
     x = window_width + i * 300
-    y = random.randint(250, window_height - 50)
+    y = random.randint(50, window_height - 50)
     platform.topleft = (x, y)
     platform_list.append(platform)
 
