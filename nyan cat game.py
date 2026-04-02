@@ -10,6 +10,8 @@ pygame.display.set_caption('Nyan Cat')
 clock = pygame.time.Clock()
 difficulty = 120
 
+
+
 font = pygame.font.Font(pygame.font.get_default_font(), 36)
 
 slika_macke = pygame.image.load('Nyan-cat-slika.png').convert_alpha()
@@ -26,8 +28,8 @@ macka.x = 200
 macka.y = 300
 
 velocity_y = 0
-gravity = 0.4
-jump_strength = -12
+gravity = 0.2
+jump_strength = -10
 
 velocity_x = -4
 platform_list = [
@@ -53,10 +55,14 @@ def start_game():
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    pygame.mixer.init()
+                    pygame.mixer.music.load("nyan_cat_soundtrack.wav")
+                    pygame.mixer.music.play(-1)
                     return
                 if event.key == pygame.K_q:
                     pygame.quit()
                     quit()
+
 
 def gravitacija():
     global velocity_y
