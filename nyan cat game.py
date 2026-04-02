@@ -15,69 +15,84 @@ print("press r to restart")
 print("press q to quit")
 
 
-slika_macke = pygame.image.load('Nyan_cat_slika.png').convert_alpha()
-slika_macke = pygame.transform.scale(slika_macke, (200, 100))
+slika_macke = pygame.image.load('Nyan-cat-slika.png').convert_alpha()
+slika_macke = pygame.transform.scale(slika_macke, (150, 100))
 macka = slika_macke.get_rect()
 macka.x = 200
 macka.y = 300
 
-
 velocity_y = 0
-gravity = 1
-jump_strength = -20
-velocity_x = -5
+gravity = 0.2
+jump_strength = -10
+velocity_x = -2
 
-platform_list = []
-for i in range(4):
-    platform = pygame.Rect(random.randrange(300, 1200), random.randrange(50, 700), 500, 50)
-    platform_list.append(platform)
 
+platform_list = [
+    pygame.Rect(300, 400, 300, 50),
+    pygame.Rect(600, 400, 300, 50),
+    pygame.Rect(900, 400, 300, 50),
+    pygame.Rect(1200, 400, 300, 50),
+    pygame.Rect(1500, 400, 300, 50)
+]
+
+platforme_y_list = [600, 500, 400, 300, 200, 100]
+
+
+platform = pygame.image.load("Klobasa.png").convert_alpha()
+platform = pygame.transform.scale(platform, (300, 50))
+
+
+bg = pygame.image.load("Background.jpg").convert()
+bg = pygame.transform.scale(bg, (window_width, window_height))
 
 def gravitacija():
     global velocity_y
     velocity_y += gravity
     macka.y += velocity_y
 
-
 def platforme_premik():
-    for rect in platform_list:
-        rect.x += velocity_x
+    global velocity_y
 
+    for platform in platform_list:
+        platform.x += velocity_x
+
+
+        if macka.colliderect(platform):
+            if macka.bottom <= platform.top:
+                macka.bottom = platform.top
+                velocity_y = 0
 
 def jump():
     global velocity_y
     velocity_y = jump_strength
 
-
-def collisions():
+def collisions(prev_y):
     global velocity_y
 
-    if macka.bottom > window_height:
-        macka.bottom = window_height
-        velocity_y = 0
+    for platform in platform_list:
+        platform.x += velocity_x
+
+        if macka.colliderect(platform):
+            if velocity_y > 0 and prev_y + macka.height <= platform.top:
+                macka.bottom = platform.top
+                velocity_y = 0
+
 
     for platform in platform_list:
-        if macka.colliderect(platform) and velocity_y > 0:
-            macka.bottom = platform.top
-            velocity_y = 0
-
-    for platform in platform_list:
-        if platform.x < -500:
-            platform.x = 1200
-            platform.y = random.randrange(50, 700)
-
+        if platform.x < -300:
+            platform.x = window_width
+            platform.y = random.choice(platforme_y_list)
 
 def draw_every_platform():
     for rect in platform_list:
-        pygame.draw.rect(screen, "black", rect)
-
+        screen.blit(platform, rect)
 
 def game_loop():
     global velocity_y
-
     velocity_y = 0
 
     while True:
+        prev_y = macka.y
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -92,18 +107,18 @@ def game_loop():
                 elif event.key == pygame.K_r:
                     return
 
-        screen.fill((255, 255, 255))
+
+        screen.blit(bg, (0, 0))
 
         gravitacija()
-        collisions()
+        collisions(prev_y)
         platforme_premik()
 
         screen.blit(slika_macke, macka)
         draw_every_platform()
 
         pygame.display.update()
-        clock.tick(60)
-
+        clock.tick(120)
 
 while True:
     game_loop()
