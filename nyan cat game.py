@@ -10,8 +10,6 @@ pygame.display.set_caption('Nyan Cat')
 clock = pygame.time.Clock()
 difficulty = 120
 
-
-
 font = pygame.font.Font(pygame.font.get_default_font(), 36)
 
 slika_macke = pygame.image.load('Nyan-cat-slika.png').convert_alpha()
@@ -24,8 +22,8 @@ bg = pygame.image.load("Background.jpg").convert()
 bg = pygame.transform.scale(bg, (window_width, window_height))
 
 macka = slika_macke.get_rect()
-macka.x = 200
-macka.y = 300
+jump_counter = 0
+lives = 3
 
 velocity_y = 0
 gravity = 0.2
@@ -58,11 +56,28 @@ def start_game():
                     pygame.mixer.init()
                     pygame.mixer.music.load("nyan_cat_soundtrack.wav")
                     pygame.mixer.music.play(-1)
-                    return
+                    game_loop()
                 if event.key == pygame.K_q:
                     pygame.quit()
                     quit()
 
+def game_over():
+    while True:
+        screen.fill((0, 0, 0))
+        text = font.render("GAME OVER | Press R to restart | Q to quit", True, "red")
+        screen.blit(text, (200, 350))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    start_game()
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
 
 def gravitacija():
     global velocity_y
@@ -70,8 +85,16 @@ def gravitacija():
     macka.y += velocity_y
 
 def jump():
+    global jump_counter
     global velocity_y
-    velocity_y = jump_strength
+
+
+    if jump_counter < 0:
+        return
+    else:
+        jump_counter -= 1
+        velocity_y = jump_strength
+
 
 def move_platforms():
     for platform in platform_list:
@@ -79,35 +102,46 @@ def move_platforms():
 
 def collisions(prev_y):
     global velocity_y
-
+    global lives
+    global jump_counter
     for platform in platform_list:
         if macka.colliderect(platform):
             if velocity_y > 0 and prev_y + macka.height <= platform.top + 5:
                 macka.bottom = platform.top
                 velocity_y = 0
+                jump_counter = 1
 
         if platform.x < -300:
             platform.x = window_width
             platform.y = random.choice(platforme_y_list)
 
     if macka.bottom > window_height:
-        macka.bottom = window_height
+        lives -= 1
+        macka.y = 300
         velocity_y = 0
+        jump_counter = 1
+        if lives <= 0:
+            game_over()
+
 
 def draw_every_platform():
     for rect in platform_list:
         screen.blit(platform_img, rect)
 
+
+
 def game_loop():
     global velocity_y
-    global difficulty
+    global lives
 
+    lives = 3
     macka.x = 200
     macka.y = 300
     velocity_y = 0
 
     while True:
-        difficulty = difficulty + 0.01
+        global  velocity_x
+        velocity_x -= 0.005
         prev_y = macka.y
 
         for event in pygame.event.get():
@@ -120,22 +154,26 @@ def game_loop():
                 elif event.key == pygame.K_q:
                     pygame.quit()
                     quit()
-                elif event.key == pygame.K_r:
-                    return
 
         screen.blit(bg, (0, 0))
 
         gravitacija()
         move_platforms()
-        collisions(prev_y)
+
+
+        if collisions(prev_y):
+            if game_over():
+                return
 
         screen.blit(slika_macke, macka)
         draw_every_platform()
 
+
+        lives_text = font.render(f"Lives: {lives}", True, "white")
+        screen.blit(lives_text, (20, 20))
+
         pygame.display.update()
-        clock.tick(difficulty)
+        clock.tick(120)
+
 
 start_game()
-
-while True:
-    game_loop()
