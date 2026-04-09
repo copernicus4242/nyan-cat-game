@@ -143,6 +143,7 @@ def game_loop():
     macka.x = 200
     macka.y = 300
     velocity_y = 0
+    bg_x = 0
 
     while True:
         difficulty = difficulty + 0.01
