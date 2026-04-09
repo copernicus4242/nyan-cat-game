@@ -3,6 +3,7 @@ import random
 
 pygame.init()
 
+#Osnovne nastavitve ekrana
 window_height = 800
 window_width = 1200
 screen = pygame.display.set_mode((window_width, window_height))
@@ -10,25 +11,50 @@ pygame.display.set_caption('Nyan Cat')
 clock = pygame.time.Clock()
 difficulty = 120
 
+<<<<<<< HEAD
 font = pygame.font.Font(pygame.font.get_default_font(), 36)
 
+=======
+#Navodila
+print("press SPACE to jump")
+print("press r to restart")
+print("press q to quit")
+
+#Nastavitve glasbe
+pygame.mixer.init()
+pygame.mixer.music.load("nyan_cat_soundtrack.wav")
+pygame.mixer.music.play(-1)
+
+#Nastavitve macke
+>>>>>>> 3f321ceb9d4f018beeca2f2f5311a4f49c0507f7
 slika_macke = pygame.image.load('Nyan-cat-slika.png').convert_alpha()
 slika_macke = pygame.transform.scale(slika_macke, (150, 100))
-
-platform_img = pygame.image.load("Klobasa.png").convert_alpha()
-platform_img = pygame.transform.scale(platform_img, (300, 50))
-
-bg = pygame.image.load("Background.jpg").convert()
-bg = pygame.transform.scale(bg, (window_width, window_height))
 
 macka = slika_macke.get_rect()
 jump_counter = 0
 lives = 3
 
+#Nastavitve mavrice za macko
+trail = []
+trail_length = 140
+
+barve = [
+    (255, 0, 0), #rdeca
+    (255, 127, 0), #oranzna
+    (255, 255, 0), #rumena
+    (0, 255, 0), #zelena
+    (0, 0, 255), #modra
+    (75, 0, 130), #vijolicna
+]
+
+scrol_speed = 2
+
+#Fizikalne kolicine
 velocity_y = 0
 gravity = 0.2
 jump_strength = -10
 
+#Nastavitve platform
 velocity_x = -4
 platform_list = [
     pygame.Rect(300, 400, 300, 50),
@@ -40,6 +66,16 @@ platform_list = [
 
 platforme_y_list = [600, 500, 400, 300, 200, 100]
 
+platform_img = pygame.image.load("Klobasa.png").convert_alpha()
+platform_img = pygame.transform.scale(platform_img, (300, 50))
+
+#Nastavitve ozadja
+bg = pygame.image.load("Background.jpg").convert()
+bg = pygame.transform.scale(bg, (window_width, window_height))
+
+font = pygame.font.Font(pygame.font.get_default_font(), 36)
+
+#Funkcije
 def start_game():
     while True:
         screen.fill((0, 0, 0))
@@ -61,6 +97,7 @@ def start_game():
                     pygame.quit()
                     quit()
 
+<<<<<<< HEAD
 def game_over():
     while True:
         screen.fill((0, 0, 0))
@@ -79,6 +116,8 @@ def game_over():
                     pygame.quit()
                     quit()
 
+=======
+>>>>>>> 3f321ceb9d4f018beeca2f2f5311a4f49c0507f7
 def gravitacija():
     global velocity_y
     velocity_y += gravity
@@ -128,8 +167,16 @@ def draw_every_platform():
     for rect in platform_list:
         screen.blit(platform_img, rect)
 
+<<<<<<< HEAD
 
 
+=======
+def premik_trail():
+    for t in trail:
+        t[0] -= scrol_speed
+
+#Glavna zanka
+>>>>>>> 3f321ceb9d4f018beeca2f2f5311a4f49c0507f7
 def game_loop():
     global velocity_y
     global lives
@@ -138,6 +185,7 @@ def game_loop():
     macka.x = 200
     macka.y = 300
     velocity_y = 0
+    bg_x = 0
 
     while True:
         global  velocity_x
@@ -155,6 +203,16 @@ def game_loop():
                     pygame.quit()
                     quit()
 
+        #Programiranje ozadja
+        screen.fill((255, 255, 255))
+        bg_x -= 2
+
+        screen.blit(bg, (bg_x, 0))
+        screen.blit(bg, (bg_x + bg.get_width(), 0))
+        if bg_x <= -bg.get_width():
+            bg_x = 0
+
+        #Osnovni dejavniki igrice
         screen.blit(bg, (0, 0))
 
         gravitacija()
@@ -165,13 +223,32 @@ def game_loop():
             if game_over():
                 return
 
+        #Mavrica
+        trail.append([macka.x + 40, macka.y + 20])
+
+        premik_trail()
+
+        if len(trail) > trail_length:
+            trail.pop(0)
+
+        for i, t in enumerate(trail):
+            for j, barva in enumerate(barve):
+                pygame.draw.rect(screen, barva, (t[0], t[1] + j*10, 40, 10))
+
+        #Macka
         screen.blit(slika_macke, macka)
+
+        #Platforme
         draw_every_platform()
 
+<<<<<<< HEAD
 
         lives_text = font.render(f"Lives: {lives}", True, "white")
         screen.blit(lives_text, (20, 20))
 
+=======
+        #Osnovna koda
+>>>>>>> 3f321ceb9d4f018beeca2f2f5311a4f49c0507f7
         pygame.display.update()
         clock.tick(120)
 
