@@ -22,16 +22,8 @@ pygame.mixer.music.load("nyan_cat_soundtrack.wav")
 pygame.mixer.music.play(-1)
 
 #Nastavitve macke
-font = pygame.font.Font(pygame.font.get_default_font(), 36)
-
 slika_macke = pygame.image.load('Nyan-cat-slika.png').convert_alpha()
 slika_macke = pygame.transform.scale(slika_macke, (150, 100))
-
-platform_img = pygame.image.load("Klobasa.png").convert_alpha()
-platform_img = pygame.transform.scale(platform_img, (300, 50))
-
-bg = pygame.image.load("Background.jpg").convert()
-bg = pygame.transform.scale(bg, (window_width, window_height))
 
 macka = slika_macke.get_rect()
 macka.x = 200
@@ -69,8 +61,16 @@ platform_list = [
 
 platforme_y_list = [600, 500, 400, 300, 200, 100]
 
-platform = pygame.image.load("Klobasa.png").convert_alpha()
-platform = pygame.transform.scale(platform, (300, 50))
+platform_img = pygame.image.load("Klobasa.png").convert_alpha()
+platform_img = pygame.transform.scale(platform_img, (300, 50))
+
+#Nastavitve ozadja
+bg = pygame.image.load("Background.jpg").convert()
+bg = pygame.transform.scale(bg, (window_width, window_height))
+
+font = pygame.font.Font(pygame.font.get_default_font(), 36)
+
+#Funkcije
 def start_game():
     while True:
         screen.fill((0, 0, 0))
@@ -92,11 +92,6 @@ def start_game():
                     pygame.quit()
                     quit()
 
-#Nastavitve ozadja
-bg = pygame.image.load("Background.jpg").convert()
-bg = pygame.transform.scale(bg, (window_width, window_height))
-
-#Funkcije
 def gravitacija():
     global velocity_y
     velocity_y += gravity
